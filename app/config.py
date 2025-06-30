@@ -1,10 +1,7 @@
-FROM python:3.11-slim
+import os
 
-WORKDIR /app
+# Название модели, которую использует Ollama (можно поменять на mistral, codellama и т.д.)
+MODEL_NAME = os.getenv("MODEL", "llama3")
 
-COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Хост и порт Ollama-сервера (если вдруг вынесен в отдельный контейнер)
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
