@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./app
+    container_name: ai-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - ollama
+    environment:
+      - MODEL=llama3
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama-data
