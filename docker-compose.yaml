@@ -24,10 +24,7 @@ services:
       - ollama-data:/root/.ollama
     restart: unless-stopped
 
-volumes:
-  ollama-data: {}
-
-telegram-bot:
+  telegram-bot:
     build:
       context: ./app
     container_name: telegram-bot
@@ -38,3 +35,7 @@ telegram-bot:
       - API_URL=http://api:8000/ask
     command: ["python", "bot.py"]
     restart: unless-stopped
+
+volumes:
+  ollama-data: {}
+
