@@ -28,12 +28,12 @@ services:
     build:
       context: ./app
     container_name: telegram-bot
+    command: ["python", "bot.py"]
     depends_on:
       - api
     environment:
       - TELEGRAM_TOKEN=7969284143:AAGE4VsqW4QefQHrd6pp0Op15o_4kJ0VqIM
       - API_URL=http://api:8000/ask
-    command: ["python", "bot.py"]
     restart: unless-stopped
 
 volumes:
