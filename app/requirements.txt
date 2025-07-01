@@ -4,5 +4,5 @@ langchain
 langchain_community
 langchain-community
 ollama
-aiogram
+aiogram==2.25.1
 requests
