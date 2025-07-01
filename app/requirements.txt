@@ -4,3 +4,5 @@ langchain
 langchain_community
 langchain-community
 ollama
+aiogram
+requests

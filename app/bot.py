@@ -1,29 +1,23 @@
-import os
 import logging
 import requests
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-
-API_URL = os.getenv("API_URL", "http://api:8000/ask")  # имя сервиса из docker-compose
+from aiogram import Bot, Dispatcher, types
+from aiogram.utils import executor
+from config import TELEGRAM_TOKEN, API_URL
 
 logging.basicConfig(level=logging.INFO)
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")  # токен ты вставишь в .env или docker-compose.yaml
+bot = Bot(token=TELEGRAM_TOKEN)
+dp = Dispatcher(bot)
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Задай мне вопрос.")
-
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    question = update.message.text
+@dp.message_handler()
+async def handle_message(message: types.Message):
+    user_question = message.text
     try:
-        r = requests.get(API_URL, params={"question": question}, timeout=30)
-        answer = r.json().get("answer", "Что-то пошло не так.")
-        await update.message.reply_text(answer)
+        response = requests.get(API_URL, params={"question": user_question})
+        answer = response.json().get("answer", "Не удалось получить ответ.")
     except Exception as e:
-        await update.message.reply_text(f"Ошибка: {str(e)}")
+        answer = f"Ошибка: {e}"
+    await message.reply(answer)
 
-def run():
-    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    app.run_polling()
+if name == "__main__":
+    executor.start_polling(dp, skip_updates=True)
